@@ -1,7 +1,7 @@
 .gitignore
 data.json
 .json
-linkme.json
+old/linkme_old.json
 .idea
 venv
 .env
