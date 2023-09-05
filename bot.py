@@ -104,7 +104,7 @@ def get_player_stats(governor_id):
     with open('data.json', 'r') as f:
         data = json.load(f)
 
-    for player in data['24Aug23-08h10m']:
+    for player in data['29Aug23-20h19m']:
         if player["Governor ID"] == governor_id:
             return player
     return None
@@ -114,7 +114,7 @@ def get_player_stats_kvk(governor_id):
     with open('data.json', 'r') as f:
         data = json.load(f)
 
-    for player in data['scoreKL']:
+    for player in data['KVK ']:
         if player["Governor ID"] == governor_id:
             return player
     return None
@@ -139,8 +139,9 @@ async def player_stats(interaction: discord.Interaction, governor_id: int):
         await interaction.response.send_message(f"No player KVK stats found with Governor ID {governor_id}")
         return
 
-    t4_kills_kvk = player_kvk.get('T4 Kills KVK', 0)
-    t5_kills_kvk = player_kvk.get('T5 Kills KVK', 0)
+    t4_kills_kvk = player_kvk.get('T4-Kills-gained-kvk', 0)
+    t5_kills_kvk = player_kvk.get('T5-Kills-gained-kvk', 0)
+    dead_troops = dead_troops_gained_kvk = player_kvk.get('Dead-troops-gained-kvk', 0)
 
     if player is None:
         await interaction.response.defer()
@@ -151,16 +152,16 @@ async def player_stats(interaction: discord.Interaction, governor_id: int):
         embed.add_field(name="Stats", value=f"POWER: {format(int(str(player['Power']).replace(' ', '')), ',')}\n"
                                             f"KP: {format(int(str(player['Kill Points']).replace(' ', '')), ',')}\n"
                                             , inline=False)
-        embed.add_field(name="KL STATS", value= f"T4-KILLS-GAINED: {format(int(player_kvk['T4-Kills-KL']), ',')}\n"
-                                                f"T5-KILLS-GAINED: {format(int(player_kvk['T5-Kills-KL']), ',')}\n"
-                                                f"DEAD TROOPS: {format(int(player_kvk['Dead Troops-KL']), ',')}\n"
+        embed.add_field(name="L7 STATS", value= f"T4-KILLS-GAINED: {format(int(player_kvk['T4-Kills-L7']), ',')}\n"
+                                                f"T5-KILLS-GAINED: {format(int(player_kvk['T5-Kills-L7']), ',')}\n"
+                                                f"DEAD TROOPS: {format(int(player_kvk['Dead Troops-L7']), ',')}\n"
                                                 , inline=False)
 
         embed.add_field(name="KVK STATS", value=f"RANK: {format(int(str(player_kvk['Rank']).replace(' ', '')), ',')}\n"
                                                 f"T4-KILLS-GAINED: {format(int(t4_kills_kvk), ',')}\n"
                                                 f"T5-KILLS-GAINED: {format(int(t5_kills_kvk), ',')}\n"
-                                                f"DEAD TROOPS: {format(int(player_kvk['Dead Troops']), ',')}\n"
-                                                f"SCORE: {format(int(player_kvk['Score ']), ',')}\n", inline=False)
+                                                f"DEAD TROOPS: {format(int(dead_troops), ',')}\n"
+                                                f"SCORE: {format(int(player_kvk['Score']), ',')}\n", inline=False)
 
         await interaction.response.defer()
         await interaction.followup.send(embed=embed, ephemeral=False)
@@ -208,8 +209,9 @@ async def stats(interaction: discord.Interaction):
         await interaction.response.send_message(f"No player KVK stats found with Governor ID {governor_id}")
         return
 
-    t4_kills_kvk = player_kvk.get('T4 kills KVK', 0)
-    t5_kills_kvk = player_kvk.get('T5 Kills KVK', 0)
+    t4_kills_kvk = player_kvk.get('T4-Kills-gained', 0)
+    t5_kills_kvk = player_kvk.get('T5-Kills-gained', 0)
+    dead_troops = player_kvk.get('Dead-troops-gained', 0)
 
     if player is None:
         await interaction.response.send_message(f"No player found with Governor ID {governor_id}")
@@ -219,18 +221,19 @@ async def stats(interaction: discord.Interaction):
                               color=discord.Color.red())
         embed.add_field(name="Stats", value=f"POWER: {format(int(str(player['Power']).replace(' ', '')), ',')}\n"
                                             f"KP: {format(int(str(player['Kill Points']).replace(' ', '')), ',')}\n"
+                                            f"Dead Troops: {format(int(str(player['Dead Troops']).replace(' ', '')), ',')}\n"
                                             , inline=False)
 
-        embed.add_field(name="KL STATS", value= f"T4-KILLS-GAINED: {format(int(player_kvk['T4-Kills-KL']), ',')}\n"
-                                                f"T5-KILLS-GAINED: {format(int(player_kvk['T5-Kills-KL']), ',')}\n"
-                                                f"DEAD TROOPS: {format(int(player_kvk['Dead Troops-KL']), ',')}\n"
+        embed.add_field(name="L7 STATS", value= f"T4-KILLS-GAINED: {format(int(player_kvk['T4-Kills-L7']), ',')}\n"
+                                                f"T5-KILLS-GAINED: {format(int(player_kvk['T5-Kills-L7']), ',')}\n"
+                                                f"DEAD TROOPS: {format(int(player_kvk['Dead Troops-L7']), ',')}\n"
                                                 , inline=False)
 
         embed.add_field(name="KVK STATS", value=f"RANK: {format(int(str(player_kvk['Rank']).replace(' ', '')), ',')}\n"
                                                 f"T4-KILLS-GAINED: {format(int(t4_kills_kvk), ',')}\n"
                                                 f"T5-KILLS-GAINED: {format(int(t5_kills_kvk), ',')}\n"
-                                                f"DEAD TROOPS: {format(int(player_kvk['Dead Troops']), ',')}\n"
-                                                f"SCORE: {format(int(player_kvk['Score ']), ',')}\n", inline=False)
+                                                f"DEAD TROOPS: {format(int(dead_troops), ',')}\n"
+                                                f"SCORE: {format(int(player_kvk['Score']), ',')}\n", inline=False)
 
         await interaction.response.defer()
         await interaction.followup.send(embed=embed, ephemeral=False)
@@ -243,7 +246,7 @@ async def top10(interaction: discord.Interaction):
         data = json.load(f)
 
     # Get the data from the specific sheet
-    data_sheet = data['scoreKL']
+    data_sheet = data['KVK ']
 
     # Filter out records without the "Rank" field
     data_with_rank = [record for record in data_sheet if "Rank" in record]
@@ -260,8 +263,8 @@ async def top10(interaction: discord.Interaction):
         embed.add_field(name=f"Rank #{i+1}", value=f"Player: {player['Name']}\n"
                                                    f"T4-KILLS-GAINED: {format(int(player['T4-Kills-gained']), ',')}\n"
                                                    f"T5-KILLS-GAINED: {format(int(player['T5-Kills-gained']), ',')}\n"
-                                                   f"DEAD TROOPS: {format(int(player['Dead Troops']), ',')}\n"
-                                                   f"SCORE: {format(int(player['Score ']), ',')}\n", inline=False)
+                                                   f"DEAD TROOPS: {format(int(player['Dead-troops-gained']), ',')}\n"
+                                                   f"SCORE: {format(int(player['Score']), ',')}\n", inline=False)
     await interaction.response.defer()
     await interaction.followup.send(embed=embed, ephemeral=False)
 
