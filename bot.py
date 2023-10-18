@@ -8,8 +8,6 @@ import logging
 from dotenv import load_dotenv
 from datetime import datetime
 
-
-
 intents = discord.Intents.default()
 intents.message_content = True
 
@@ -20,18 +18,20 @@ EXCEL_ALLOWED_USER_ID_MORPHEY = 446232887214342144
 EXCEL_ALLOWED_USER_ID_CINNA = os.getenv("EXCEL_ALLOWED_USER_ID_CINNA")
 
 
-
 bot = commands.Bot(command_prefix='.', intents=intents)
 
 # Load the data from the JSON file
-with open('data.json', 'r') as f:
+with open('json/kvk1/data.json', 'r') as f:
     data = json.load(f)
+
 
 def is_allowed_user(ctx):
     return ctx.author.id == EXCEL_ALLOWED_USER_ID_MORPHEY
 
+
 # Setup the logger
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
+
 
 async def log_command(interaction):
     logging.info(f'User {interaction.user.name} ({interaction.user.id}) executed command {interaction.command_name}')
@@ -45,6 +45,7 @@ async def on_ready():
         print(f"Commands synced")
     except Exception as e:
         print(f"Error syncing commands: {e}")
+
 
 @bot.tree.command(name="ping")
 async def serverinfo(interaction: discord.Interaction):
@@ -86,7 +87,7 @@ async def excel(ctx):
 
         # Convert the dictionary of DataFrames to a dictionary of dictionaries and save it as JSON
         dict_of_dicts = {sheet: df.to_dict(orient='records') for sheet, df in dfs.items()}
-        json_filename = "data.json"
+        json_filename = "json/kvk1/data.json"
         with open(json_filename, 'w') as f:
             json.dump(dict_of_dicts, f, indent=4, sort_keys=True)
 
@@ -101,7 +102,7 @@ async def excel(ctx):
 
 def get_player_stats(governor_id):
     # Load the data from the JSON file
-    with open('data.json', 'r') as f:
+    with open('json/kvk1/data.json', 'r') as f:
         data = json.load(f)
 
     for player in data['29Aug23-20h19m']:
@@ -111,7 +112,7 @@ def get_player_stats(governor_id):
 
 def get_player_stats_kvk(governor_id):
     # Load the data from the JSON file
-    with open('data.json', 'r') as f:
+    with open('json/kvk1/data.json', 'r') as f:
         data = json.load(f)
 
     for player in data['KVK ']:
@@ -169,7 +170,7 @@ async def player_stats(interaction: discord.Interaction, governor_id: int):
 
 
 try:
-    with open('old/linkme_old.json', 'r') as f:
+    with open('json/old/linkme_old.json', 'r') as f:
         linkme_data = json.load(f)
 except FileNotFoundError:
     linkme_data = {}
@@ -189,7 +190,7 @@ def format_date(date_string):
 @app_commands.describe(governor_id='The ID of the governor')
 async def linkme(interaction: discord.Interaction, governor_id: int):
     linkme_data[str(interaction.user.id)] = governor_id
-    with open('old/linkme_old.json', 'w') as f:
+    with open('json/old/linkme_old.json', 'w') as f:
         json.dump(linkme_data, f)
     await interaction.response.send_message(f"Linked Discord ID {interaction.user.id} with Governor ID {governor_id}")
 
@@ -242,7 +243,7 @@ async def stats(interaction: discord.Interaction):
 @bot.tree.command(name='top10')
 async def top10(interaction: discord.Interaction):
     # Load the data from the JSON file
-    with open('data.json', 'r') as f:
+    with open('json/kvk1/data.json', 'r') as f:
         data = json.load(f)
 
     # Get the data from the specific sheet
